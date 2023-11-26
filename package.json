@@ -4,6 +4,7 @@
   "description": "An xterm.js addon designed to provide a snapshot of plain-text contextual information from the terminal for use in an LLM for analysis and autocomplete predictions.",
   "author": "WVAviator",
   "license": "MIT",
+  "main": "src/index.ts",
   "private": false,
   "dependencies": {
     "xterm": "^5.3.0"

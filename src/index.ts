@@ -1,0 +1,1 @@
+export { SnapshotAddon } from './SnapshotAddon';
