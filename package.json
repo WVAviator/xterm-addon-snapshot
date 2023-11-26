@@ -1,0 +1,15 @@
+{
+  "name": "xterm-addon-snapshot",
+  "version": "0.0.1",
+  "description": "An xterm.js addon designed to provide a snapshot of plain-text contextual information from the terminal for use in an LLM for analysis and autocomplete predictions.",
+  "author": "WVAviator",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "xterm": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.2"
+  }
+}
