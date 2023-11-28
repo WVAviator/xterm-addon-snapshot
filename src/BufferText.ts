@@ -35,13 +35,13 @@ export class BufferText {
   public cursor(rowsBefore: number = 0, trim: boolean = true): string {
     if (trim) {
       const lines = this.getLinesInRange(
-        Math.max(this.activeBuffer.cursorY - rowsBefore, 0),
-        this.activeBuffer.cursorY
+        Math.max(this.cursorY - rowsBefore, 0),
+        this.cursorY
       ).map((line) => line?.translateToString().trimEnd() ?? '');
 
       lines.push(
         this.activeBuffer
-          .getLine(this.activeBuffer.cursorY)
+          .getLine(this.cursorY)
           ?.translateToString()
           .slice(0, this.activeBuffer.cursorX) ?? ''
       );
@@ -50,8 +50,8 @@ export class BufferText {
     }
 
     return this.getLinesInRange(
-      Math.max(this.activeBuffer.cursorY - rowsBefore, 0),
-      this.activeBuffer.cursorY + 1
+      Math.max(this.cursorY - rowsBefore, 0),
+      this.cursorY + 1
     )
       .map((line) => line?.translateToString() ?? ''.repeat(this.terminal.cols))
       .join('\n');
@@ -59,6 +59,10 @@ export class BufferText {
 
   private get activeBuffer() {
     return this.terminal.buffer.active;
+  }
+
+  private get cursorY() {
+    return this.activeBuffer.cursorY + this.activeBuffer.baseY;
   }
 
   private getLinesInRange(from: number, to: number) {
