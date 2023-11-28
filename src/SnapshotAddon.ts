@@ -1,11 +1,13 @@
 import { ITerminalAddon, Terminal } from 'xterm';
+import { BufferText } from './BufferText';
 
 export class SnapshotAddon implements ITerminalAddon {
   private terminal: Terminal;
+  private bufferText: BufferText;
 
   public activate(terminal: Terminal): void {
     this.terminal = terminal;
-    console.log('SnapshotAddon activated');
+    this.bufferText = new BufferText(terminal);
   }
 
   /**
@@ -28,6 +30,13 @@ export class SnapshotAddon implements ITerminalAddon {
       currentLineText?.slice(this.activeBuffer.cursorX) || '';
 
     return !textAfterCursor.trim();
+  }
+
+  /**
+   * Provides utilities for extracting text from the terminal buffer.
+   */
+  public get text(): BufferText {
+    return this.bufferText;
   }
 
   public dispose(): void {}
