@@ -1,9 +1,11 @@
 import { ITerminalAddon, Terminal } from 'xterm';
 import { BufferText } from './BufferText';
+import { DebounceCallback } from './types';
 
 export class SnapshotAddon implements ITerminalAddon {
   private terminal: Terminal;
   private bufferText: BufferText;
+  private debounceTimeout: NodeJS.Timeout;
 
   public activate(terminal: Terminal): void {
     this.terminal = terminal;
@@ -30,6 +32,21 @@ export class SnapshotAddon implements ITerminalAddon {
       currentLineText?.slice(this.activeBuffer.cursorX) || '';
 
     return !textAfterCursor.trim();
+  }
+
+  /**
+   * Provides a utility for executing SnapshotAddon methods with a debounce.
+   * This is useful when the user is executing commands in the terminal that result in multiple events in rapid succession.
+   * @param callback A callback that will be invoked after a specified idle period with this SnapshotAddon instance as the argument.
+   * @param timeout The amount of time to wait before invoking the callback. Defaults to 500ms.
+   */
+  public withDebounce(callback: DebounceCallback, timeout: number = 500) {
+    if (this.debounceTimeout) {
+      clearTimeout(this.debounceTimeout);
+    }
+    this.debounceTimeout = setTimeout(() => {
+      callback(this);
+    }, timeout);
   }
 
   /**
