@@ -1,15 +1,22 @@
 import { ITerminalAddon, Terminal } from 'xterm';
 import { BufferText } from './BufferText';
 import { DebounceCallback } from './types';
+import { CommandStore } from './CommandStore';
 
 export class SnapshotAddon implements ITerminalAddon {
   private terminal: Terminal;
   private bufferText: BufferText;
   private debounceTimeout: NodeJS.Timeout;
+  private commandStore: CommandStore;
 
   public activate(terminal: Terminal): void {
     this.terminal = terminal;
     this.bufferText = new BufferText(terminal);
+    this.commandStore = new CommandStore(terminal);
+  }
+
+  public get commands() {
+    return this.commandStore;
   }
 
   /**
