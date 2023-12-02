@@ -18,7 +18,11 @@ export class CommandStore {
     trim: 2,
   };
   private commands: string[] = [];
-  constructor(private terminal: Terminal) {
+  constructor(
+    private terminal: Terminal,
+    settings: Partial<CommandStoreSettings> = {}
+  ) {
+    this.applySettings(settings);
     terminal.onKey(({ key }) => {
       if (key !== '\r') return;
 

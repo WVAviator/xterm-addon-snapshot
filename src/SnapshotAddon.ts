@@ -2,17 +2,48 @@ import { ITerminalAddon, Terminal } from 'xterm';
 import { BufferText } from './BufferText';
 import { DebounceCallback } from './types';
 import { CommandStore } from './CommandStore';
+import { Snapshot, SnapshotOptions } from './Snapshot';
 
 export class SnapshotAddon implements ITerminalAddon {
   private terminal: Terminal;
   private bufferText: BufferText;
   private debounceTimeout: NodeJS.Timeout;
   private commandStore: CommandStore;
+  private options: SnapshotOptions = {
+    commandsToSave: 20,
+    commandTrim: 2,
+    includeViewport: true,
+  };
+
+  constructor(options?: Partial<SnapshotOptions>) {
+    Object.assign(this.options, options);
+  }
 
   public activate(terminal: Terminal): void {
     this.terminal = terminal;
     this.bufferText = new BufferText(terminal);
-    this.commandStore = new CommandStore(terminal);
+    this.commandStore = new CommandStore(terminal, {
+      commandsToSave: this.options.commandsToSave,
+      trim: this.options.commandTrim,
+    });
+  }
+
+  /**
+   * This function returns a Snapshot object that contains plain text information about the users terminal session.
+   *
+   * This is useful for generating autocompletions by providing context to a machine learning model or other algorithm.
+   *
+   * @returns {Snapshot} A snapshot of the terminal state.
+   */
+  public getSnapshot(): Snapshot {
+    return {
+      commands: this.commandStore.getCommands(),
+      viewport: this.options.includeViewport
+        ? this.bufferText.viewport()
+        : undefined,
+      entry: this.commandStore.current,
+      isAppending: this.isAppending,
+    };
   }
 
   public get commands() {
